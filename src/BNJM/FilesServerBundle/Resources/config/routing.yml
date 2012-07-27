@@ -1,0 +1,4 @@
+FileServerBundle_ADMIN:
+    resource: "@FileServerBundle/Controller/AdminController.php"
+    type:     annotation
+    prefix:   /admin

@@ -1,0 +1,41 @@
+{% extends "FileServerBundle::layout.html.twig" %}
+{% block menu %}
+<li class="current"><a href="#">Almacenes</a></li>
+{% endblock %}
+{% block sidebar_space %}{% endblock%}
+{% block submenu %}
+<li class="current"><a href="{{ url('FileServer_ListadoAlmacenes') }}"><img src="{{ asset('bundles/fileserver/img/icons/report.png') }}"> Listado</a></li>
+<li class=""><a href=""><img class="absmiddle" src="{{ asset('bundles/fileserver/img/icons/application_add.png') }}" > Crear</a></li>
+{% endblock %}
+{% block content %}
+<div id="box">
+    <h3>Almacenes</h3>
+    <table width="100%">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Archivos</th>
+                <th>Tama&ntilde;o</th>                
+            </tr>
+        </thead>
+        <tbody>
+            {% for store in stores %}
+                <tr>
+                    <td><a href="{{ url("FileServer_ListadoArchivos", {"almacen":store.name} ) }}">{{ store.name }}</a></td>
+                    <td>{{ store.descripcion }}</td>
+                    <td>{{ store.files.count }}</td>
+                    <td>{{ store.size | humanreadable }}</td>
+                </tr>                
+             {% else %}
+                <tr>
+                    <td colspan="5">No hay almacenes creados.</td>
+                </tr>                
+             {% endfor %}
+        </tbody>
+</table>
+                    <div id="pager">
+                        Total <strong>{{ stores | length }}</strong> almac{% if stores | length > 1 %}enes{% else %}&eacute;n{% endif %}
+                    </div>
+                </div>
+{% endblock %}

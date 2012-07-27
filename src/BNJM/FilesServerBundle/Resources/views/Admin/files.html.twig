@@ -1,0 +1,51 @@
+{% extends "FileServerBundle::layout.html.twig" %}
+{% block menu %}
+<li class=""><a href="{{ url("FileServer_ListadoAlmacenes") }}">Almacenes</a></li>
+<li class="current"><a href="#">{{ store.name }}</a></li>
+{% endblock %}
+{% block submenu %}
+{% include "FileServerBundle:Admin:files_submenu.html.twig" %}
+{% endblock %}
+{% block content %}
+<div id="box">
+    <h3>Almacenes</h3>
+    <table width="100%">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Tama&ntilde;o</th>
+                <th>Tags</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in store.files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.type }}</td>
+                    <td>{{ file.size | humanreadable }}</td>
+                    <td>
+                        {% for tag in file.tags %}
+                            <span class="tags">{{ tag.tag }}</span>
+                        {% else %}
+                            No tiene.
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <img src="{{ asset("bundles/fileserver/img/icons/page_white_edit.png") }}" alt="Editar" >
+                        <img src="{{ asset("bundles/fileserver/img/icons/page_white_delete.png") }}" alt="Borrar" >
+                    </td>
+                </tr>                
+             {% else %}
+                <tr>
+                    <td colspan="5">No hay almacenes creados.</td>
+                </tr>                
+             {% endfor %}
+        </tbody>
+</table>
+                    <div id="pager">
+                        Total <strong>{{ store.files | length }}</strong> archivo{% if store.files | length > 1 %}s{% endif %}
+                    </div>
+                </div>
+{% endblock %}

@@ -1,6 +1,5 @@
 FileServerBundle:
-    resource: "@FileServerBundle/Controller/"
-    type:     annotation
+    resource: "@FileServerBundle/Resources/config/routing.yml"
     prefix:   /
 
 # Internal routing configuration to handle ESI

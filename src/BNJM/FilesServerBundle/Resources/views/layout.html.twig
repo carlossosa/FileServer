@@ -1,0 +1,45 @@
+{% extends "::base.html.twig" %}
+{% block title %}Sistema de Distribuci&oacute;n de Archivos - BNC Jos&eacute; Mart&iacute;{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/fileserver/css/theme.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/fileserver/css/style.css') }}" />
+    <!--[if IE]>
+    <link rel="stylesheet" type="text/css" href="css/ie-sucks.css" />
+    <![endif]-->
+{% endblock %}
+{% block body %}
+<div id="container">
+    	<div id="header">
+            <h2>Sistema de Distribuci&oacute;n de Archivos - BNC Jos&eacute; Mart&iacute;</h2>
+    <div id="topmenu">
+            	<ul>
+                	{% block menu %}{% endblock %}
+              </ul>
+          </div>
+      </div>
+        <div id="top-panel">
+            <div id="panel">
+                <ul>
+                    {% block submenu %}{% endblock %}
+                </ul>
+            </div>
+      </div>
+        <div id="wrapper">
+            <div id="content">
+       		{% block content %}{% endblock %}	
+            </div>
+                {% block sidebar_space %}
+            <div id="sidebar">
+  				<ul>
+                	{% block sidebar %}{% endblock %}
+				</ul>       
+          </div>
+                {% endblock %}
+      </div>
+        <div id="footer">
+        <div id="credits">
+            Creado por <a href="mailto:carlitin@gmail.com">Carlos Sosa</a> para Biblioteca Nacional de Cuba Jos&eacute; Mart&iacute;
+        </div>        
+        </div>
+</div>
+{% endblock %}

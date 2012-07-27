@@ -1,0 +1,5 @@
+services:
+    twig.extension.utiles:
+        class: BNJM\FilesServerBundle\Twig\Extension\UtilesExtension
+        tags:
+          - { name: twig.extension }
