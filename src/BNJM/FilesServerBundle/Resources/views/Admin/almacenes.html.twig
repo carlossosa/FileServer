@@ -16,7 +16,7 @@
                 <th>Nombre</th>
                 <th>Descripcion</th>
                 <th>Archivos</th>
-                <th>Tama&ntilde;o</th>                
+                <th>Usado/Capacidad</th>                
             </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
                     <td><a href="{{ url("FileServer_ListadoArchivos", {"almacen":store.name} ) }}">{{ store.name }}</a></td>
                     <td>{{ store.descripcion }}</td>
                     <td>{{ store.files.count }}</td>
-                    <td>{{ store.size | humanreadable }}</td>
+                    <td>{{ store.size | humanreadable }}/{{ store.getCapacityText | humanreadable }}</td>
                 </tr>                
              {% else %}
                 <tr>

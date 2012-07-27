@@ -1,7 +1,7 @@
 {% extends "FileServerBundle::layout.html.twig" %}
 {% block menu %}
 <li class=""><a href="{{ url("FileServer_ListadoAlmacenes") }}">Almacenes</a></li>
-<li class="current"><a href="#">{{ store.name }}</a></li>
+<li class="current"><a href="#">{{ almacen }}</a></li>
 {% endblock %}
 {% block submenu %}
 {% include "FileServerBundle:Admin:files_submenu.html.twig" %}
@@ -20,14 +20,16 @@
             </tr>
         </thead>
         <tbody>
-            {% for file in store.files %}
+            {% set size = 0 %}
+            {% for file in files %}
                 <tr>
                     <td>{{ file.name }}</td>
                     <td>{{ file.type }}</td>
                     <td>{{ file.size | humanreadable }}</td>
                     <td>
                         {% for tag in file.tags %}
-                            <span class="tags">{{ tag.tag }}</span>
+                            {% set size = size + file.size %}
+                            <span class="tags"><a href="{% if tag.tag == tags %}{{ url("FileServer_ListadoArchivos", { "almacen" : almacen } ) }}{% else %}{{ url("FileServer_ListadoArchivos", { "almacen" : almacen, "tag" : tag.tag } ) }}{% endif %}">{{ tag.tag }}</a></span>
                         {% else %}
                             No tiene.
                         {% endfor %}
@@ -45,7 +47,7 @@
         </tbody>
 </table>
                     <div id="pager">
-                        Total <strong>{{ store.files | length }}</strong> archivo{% if store.files | length > 1 %}s{% endif %}
+                        Total <strong>{{ files | length }}</strong> archivo{% if files | length > 1 or files | length == 0 %}s{% endif %}{% if files | length != 0 %}, ocupando {{ size | humanreadable }} de {{ files[0].store.size | humanreadable }}{% else %}.{% endif %}
                     </div>
                 </div>
 {% endblock %}

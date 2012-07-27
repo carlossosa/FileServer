@@ -22,14 +22,17 @@ class AdminController extends Controller
     }
     
     /**
-     * @Route("/{almacen}", name="FileServer_ListadoArchivos")
+     * @Route("/{almacen}/{tag}", name="FileServer_ListadoArchivos", defaults={"tag" = "none"})
      * @Template()
      */
-    public function filesAction( $almacen) {
-        $store = $this->getDoctrine()->
-                        getEntityManager()->
-                        getRepository('FileServerBundle:Store')->
-                        findOneBy(array('name'=>$almacen));
-        return array("store"=>$store);
+    public function filesAction( $almacen, $tag) {
+        if ( $tag == "none") $tag = NULL;
+        
+        $files = $this->getDoctrine()
+                        ->getEntityManager()
+                        ->getRepository('FileServerBundle:FileStore')
+                        ->findFilesByTagAndStore( $tag, $almacen);        
+        
+        return array("files"=>$files, "tags"=>$tag, "almacen" => $almacen);
     }
 }

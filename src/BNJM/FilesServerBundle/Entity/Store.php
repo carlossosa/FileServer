@@ -32,6 +32,11 @@ class Store {
      */
     private $files;
     
+    /**
+     * @ORM\Column(type="bigint")
+     */
+    private $capacity;
+    
     public function __construct()
     {
         $this->files = new \Doctrine\Common\Collections\ArrayCollection();
@@ -115,5 +120,30 @@ class Store {
     public function getDescripcion()
     {
         return $this->descripcion;
+    }
+
+    /**
+     * Set capacity
+     *
+     * @param integer $capacity
+     */
+    public function setCapacity($capacity)
+    {
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * Get capacity
+     *
+     * @return integer 
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
+    }
+    
+    public function getCapacityText()
+    {
+        return strval($this->capacity);
     }
 }

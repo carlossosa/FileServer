@@ -21,7 +21,7 @@ class UtilesExtension extends \Twig_Extension
         $MB = 1024*1024;
         $GB = 1024*1024*1024;
         $TB = 1024*1024*1024*1024; //LO DUDO
-        $bytes = intval($bytes);
+        $bytes = floatval($bytes);
         
         if ( $bytes > $TB)
         {

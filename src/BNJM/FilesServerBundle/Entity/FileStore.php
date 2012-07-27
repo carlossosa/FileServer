@@ -46,7 +46,7 @@ class FileStore {
    *      )
      */
     private $tags;    
-    
+
     
     public function __construct()
     {
