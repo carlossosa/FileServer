@@ -1,5 +1,12 @@
-/vendor/
-/app/cache/
-/app/logs/
-/app/bootstrap.php.cache
-/web/bundles/
+# Bootstrap
+app/bootstrap*
+
+# Symfony directories
+vendor/*
+*/logs/*
+*/cache/*
+web/uploads/*
+web/bundles/*
+
+# Configuration files
+app/config/parameters.ini
