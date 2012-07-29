@@ -219,7 +219,7 @@ clear:both;
 table{
 	margin:5px;
 	border-collapse: collapse;
-	table-layout:automatic;
+	table-layout: auto;
 	width:98%;
 }
 td, th{
@@ -232,7 +232,7 @@ thead{
 		Home
 *********************/
 #infowrap li{
-	display:inline:
+	display:inline;
 }
 #infobox{
 	width:365px;
@@ -348,7 +348,7 @@ form#form #button1:hover, form#form #button2:hover {
 	padding-left:19px;
 	text-decoration:none;
 	height:20px;
-	font-size:12x;
+	font-size:12px;
 	margin:0 3px;
 	display:inline-block;
 	line-height:20px;

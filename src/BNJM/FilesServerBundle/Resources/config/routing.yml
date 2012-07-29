@@ -1,4 +1,14 @@
 FileServerBundle_ADMIN:
     resource: "@FileServerBundle/Controller/AdminController.php"
     type:     annotation
-    prefix:   /admin
+    prefix:   /admin/stores
+    
+FileServerBundle_UPLOAD:
+    resource: "@FileServerBundle/Controller/FileUploadController.php"
+    type:     annotation
+    prefix:   /admin/upload        
+    
+FileServerBundle_DOWNLOAD:
+    resource: "@FileServerBundle/Controller/FileDownloadController.php"
+    type:     annotation
+    prefix:   /

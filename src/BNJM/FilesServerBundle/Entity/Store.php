@@ -5,8 +5,8 @@ namespace BNJM\FilesServerBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
- * @ORM\Table(name="Stores", uniqueConstraints={@ORM\UniqueConstraint(name="idx_name",columns={"name"})})
+ * @ORM\Entity(repositoryClass="BNJM\FilesServerBundle\Repository\StoreRepository")
+ * @ORM\Table(name="stores", uniqueConstraints={@ORM\UniqueConstraint(name="idx_name",columns={"name"})})
  */
 class Store {
 

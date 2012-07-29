@@ -1,0 +1,12 @@
+<li><h3><a href="#" class="shipping">Etiqueta</a></h3>
+    <ul>        
+        <li><a class="search"><input type="text" id="search_tag" size="12" value="{% if tags %}{{ tags }}{% endif %}" /></a></li>
+        <li><a class="modules_manage">Configurar</a></li>
+    </ul>
+</li>
+<script type="text/javascript">
+ $('#search_tag').autocomplete({
+			source: "{{ url("FileServer_AjaxListadoTags") }}",
+			minLength: 3
+        });
+</script>

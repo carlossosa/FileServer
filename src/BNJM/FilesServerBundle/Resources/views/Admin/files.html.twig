@@ -1,14 +1,14 @@
-{% extends "FileServerBundle::layout.html.twig" %}
+{% extends app.request.isXmlHttpRequest == false ? "FileServerBundle::layout.html.twig" : "FileServerBundle::clean.html.twig" %}
 {% block menu %}
 <li class=""><a href="{{ url("FileServer_ListadoAlmacenes") }}">Almacenes</a></li>
 <li class="current"><a href="#">{{ almacen }}</a></li>
 {% endblock %}
 {% block submenu %}
 {% include "FileServerBundle:Admin:files_submenu.html.twig" %}
-{% endblock %}
+{% endblock %}    
 {% block content %}
 <div id="box">
-    <h3>Almacenes</h3>
+    <h3>Listado de Archivos</h3>
     <table width="100%">
         <thead>
             <tr>
@@ -41,13 +41,63 @@
                 </tr>                
              {% else %}
                 <tr>
-                    <td colspan="5">No hay almacenes creados.</td>
+                    <td colspan="5">Na hay archivos en este almacén, use <a href="{{ url("FileServer_Upload", {"store":almacen}) }}">Subir archivos</a> para comenzar a poner los archivos en el servidor.</td>
                 </tr>                
              {% endfor %}
         </tbody>
 </table>
-                    <div id="pager">
-                        Total <strong>{{ files | length }}</strong> archivo{% if files | length > 1 or files | length == 0 %}s{% endif %}{% if files | length != 0 %}, ocupando {{ size | humanreadable }} de {{ files[0].store.size | humanreadable }}{% else %}.{% endif %}
-                    </div>
-                </div>
+<div id="pager">{% if paginas > 1 %}P&aacute;gina 
+    {% if paginaprev != false %}<a id="prevpage" href="#"><img src="{{ asset("bundles/fileserver/img/icons/arrow_left.gif") }}" width="16" height="16" /></a>{% endif %}
+    <input size="1" value="{{ pagina }}" type="text" name="page" id="page" onchange="alert($(this).val())"/>
+    {% if paginanext != false %}<a id="nextpage" href="#"><img src="{{ asset("bundles/fileserver/img/icons/arrow_right.gif") }}" width="16" height="16" /></a>{% endif %} de {{ paginas }} | Mostrar 
+    <select id="pager_pages" name="view">
+    <option {% if porpagina == 10 %}selected="selected"{% endif %} >10</option>
+    <option {% if porpagina == 20 %}selected="selected"{% endif %} >20</option>
+    <option {% if porpagina == 50 %}selected="selected"{% endif %} >50</option>
+    <option {% if porpagina == 100 %}selected="selected"{% endif %} >100</option>
+    </select> por p&aacute;gina |{% endif %} Total <strong>{{ files | length }}</strong> archivo{% if files | length > 1 or files | length == 0 %}s{% endif %}{% if files | length != 0 %}, ocupando {{ size | humanreadable }} de {{ files[0].store.size | humanreadable }}{% else %}.{% endif %}
+</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        {% if paginas > 1 %}
+        $('#pager_pages').change(function(){ setPorPagina(this); });
+        
+        function setPorPagina ( l)
+        {
+            $.get( '{{ url("FileServer_ListadoArchivos", { "tag" : tags, "almacen" : almacen } ) }}', { show : $(l).val() }, function(h){
+                        $('#content').html(h);
+                    }, 'html');//FIN $.post
+        }
+                
+        $('#page').change(function ()
+        {
+            $.get( '{{ url("FileServer_ListadoArchivos", { "tag" : tags, "almacen" : almacen } ) }}', { page : $(this).val()  }, function(h){
+                        $('#content').html(h);
+                    }, 'html');//FIN $.post
+        });    
+        {% endif %}
+        
+        {% if paginanext != false %}
+        $('#nextpage').click(function ()
+        {
+            $.get( '{{ url("FileServer_ListadoArchivos", { "tag" : tags, "almacen" : almacen } ) }}', { page : {{ paginanext }} }, function(h){
+                        $('#content').html(h);
+                    }, 'html');//FIN $.post
+        });    
+        {% endif %}
+        
+        {% if paginaprev != false %}
+        $('#prevpage').click(function ()
+        {
+            $.get( '{{ url("FileServer_ListadoArchivos", { "tag" : tags, "almacen" : almacen } ) }}', { page : '{{ paginaprev }}' }, function(h){
+                        $('#content').html(h);
+                    }, 'html');//FIN $.post
+        });
+        {% endif %}
+    });
+</script>
+{% endblock %}
+{% block sidebar %}
+{% include "FileServerBundle:Admin:files_sidebar.html.twig" %}
 {% endblock %}

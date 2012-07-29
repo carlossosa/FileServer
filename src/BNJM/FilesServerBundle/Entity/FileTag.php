@@ -5,7 +5,7 @@ namespace BNJM\FilesServerBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BNJM\FilesServerBundle\Repository\FileTagRepository")
  * @ORM\Table(name="files_tag",uniqueConstraints={@ORM\UniqueConstraint(name="search_idx", columns={"tag"})})
  * 
  */

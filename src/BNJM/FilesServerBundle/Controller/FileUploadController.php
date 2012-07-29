@@ -15,10 +15,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class FileUploadController extends Controller {
 
     /**
-     * @Route("/{store}/_upload") 
+     * @Route("/{store}",name="FileServer_Upload") 
+     * @Template("FileServerBundle:Admin:fileupload.html.twig")
      */
     public function indexAction($store) {
-        return array();
+        return array("almacen"=>$store);
     }
 
 }

@@ -35,7 +35,11 @@ class TagConfiguration {
     private $browseable;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToMany(targetEntity="IPLocation", inversedBy="id")
+     * @ORM\JoinTable(name="files_tags_configuration_ip",
+     *      joinColumns={@ORM\JoinColumn(name="tagconfig_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="iplocation_ip", referencedColumnName="id")}
+     *      )
      */
     private $visibility; 
 
@@ -67,27 +71,7 @@ class TagConfiguration {
     public function getBrowseable()
     {
         return $this->browseable;
-    }
-
-    /**
-     * Set visibility
-     *
-     * @param integer $visibility
-     */
-    public function setVisibility($visibility)
-    {
-        $this->visibility = $visibility;
-    }
-
-    /**
-     * Get visibility
-     *
-     * @return integer 
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
-    }
+    }  
 
     /**
      * Set store
@@ -127,5 +111,29 @@ class TagConfiguration {
     public function getTag()
     {
         return $this->tag;
+    }
+    public function __construct()
+    {
+        $this->visibility = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add visibility
+     *
+     * @param BNJM\FilesServerBundle\Entity\IPLocation $visibility
+     */
+    public function addIPLocation(\BNJM\FilesServerBundle\Entity\IPLocation $visibility)
+    {
+        $this->visibility[] = $visibility;
+    }
+
+    /**
+     * Get visibility
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
     }
 }

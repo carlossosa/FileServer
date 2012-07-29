@@ -1,0 +1,8 @@
+{% extends "FileServerBundle::layout.html.twig" %}
+{% block menu %}
+<li class=""><a href="{{ url("FileServer_ListadoAlmacenes") }}">Almacenes</a></li>
+<li class="current"><a href="#">{{ almacen }}</a></li>
+{% endblock %}
+{% block submenu %}
+{% include "FileServerBundle:Admin:files_submenu.html.twig" %}
+{% endblock %}
