@@ -23,16 +23,15 @@
             {% set size = 0 %}
             {% for file in files %}
                 <tr>
+                    {% set size = size + file.size %}
                     <td>{{ file.name }}</td>
                     <td>{{ file.type }}</td>
                     <td>{{ file.size | humanreadable }}</td>
                     <td>
-                        {% for tag in file.tags %}
-                            {% set size = size + file.size %}
-                            <span class="tags"><a href="{% if tag.tag == tags %}{{ url("FileServer_ListadoArchivos", { "almacen" : almacen } ) }}{% else %}{{ url("FileServer_ListadoArchivos", { "almacen" : almacen, "tag" : tag.tag } ) }}{% endif %}">{{ tag.tag }}</a></span>
-                        {% else %}
-                            No tiene.
+                        {% for tag in file.tags %}                            
+                            <span id="tag_{{ tag.tag }}_{{ file.id }}" class="tags"><a href="{% if tag.tag == tags %}{{ url("FileServer_ListadoArchivos", { "almacen" : almacen } ) }}{% else %}{{ url("FileServer_ListadoArchivos", { "almacen" : almacen, "tag" : tag.tag } ) }}{% endif %}">{{ tag.tag }}</a><a href="#" class="tag_remove"> X</a></span>
                         {% endfor %}
+                            <a id="{{ file.id }}" class="add_tag" alt="Agregar etiqueta"><img src="{{ asset("bundles/fileserver/img/icons/add.png") }}" alt="Agregar etiqueta" ></a>
                     </td>
                     <td>
                         <img src="{{ asset("bundles/fileserver/img/icons/page_white_edit.png") }}" alt="Editar" >
@@ -60,6 +59,104 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
+        // ADD TAG ZONE
+        var add_tag_input = null;
+        var add_tag_for = null;
+        
+        function addTag ( t)
+        {
+            if ( add_tag_input != null) addTagRemove();
+            
+            var input = '<input id="add_tag_input" value="" type="text" />';            
+            $(t).before(input);
+            add_tag_input = '#add_tag_input';
+            add_tag_for = $(t).attr('id');
+            $(add_tag_input).keypress(function(e){
+                                                    if ( e.which == 13)
+                                                        {
+                                                            addTagRegister();
+                                                            return false;
+                                                        }
+                                                   });
+            $(add_tag_input).change(function(){
+                                                        addTagRegister();
+                                                    });                                       
+            addTagAutocomplete();
+        }   
+        
+        function addTagRegister()
+        {
+            if ( $(add_tag_input).val().length < 3 ) 
+                {
+                    addTagRemove();
+                    return ;
+                }
+            //REGISTER AJAX
+            $.post( '{{ url("FileServer_AjaxSetTag") }}', { fileid : add_tag_for, tag: $(add_tag_input).val()  }, function(h){                    
+                if ( h.err == "OK")
+                    {
+                        $('#tag_'+$(add_tag_input).val()+'_'+add_tag_for).remove();            
+                        tag = $(add_tag_input).val();
+                        _tag = '<span id="tag_'+tag+'_'+add_tag_for+'" class="tags"><a href="{{ url("FileServer_ListadoArchivos", { "almacen" : almacen } ) }}/'+tag+'">'+tag+'</a><a href="#" class="tag_remove"> X</a></span>';
+                        $(add_tag_input).before(_tag);                        
+                    } else alert(h.err);
+                addTagRemove();                    
+                removeTagActive();
+            }, 'json');
+            //POST END            
+        }
+        
+        function addTagRemove ()
+        {
+            $(add_tag_input).remove();
+            add_tag_input = null;
+            add_tag_for = null;
+        }
+
+        function addTagAutocomplete ()
+        {
+            if ( add_tag_input != null)
+                {
+                    $(add_tag_input).autocomplete({
+                                                    source: "{{ url("FileServer_AjaxListadoTags") }}",
+                                                    minLength: 3
+                                                   });
+                }                    
+        }                
+       
+        function removeTagActive () { 
+            $('.tag_remove').each(function( i, domE){ 
+                                        $(domE).prev('a').mouseover(function() {
+                                                                                 $(this).next('a').show();
+                                                                                });
+                                        $(domE).click(function(){ removeTag(this); }); 
+                                        $(domE).hide(); 
+                                    }); 
+            $('.tags').each(function( i, domE){ 
+                                        $(domE).mouseout(function(){
+                                                  $('.tag_remove').each(function( i, domE){
+                                                                                              setTimeout(function() {  $(domE).hide(); }, 5000); 
+                                                                                          }); 
+                                                });
+                                    });
+        }
+        
+        function removeTag ( t) {
+            //REGISTER AJAX
+            $.post( '{{ url("FileServer_AjaxUnSetTag") }}', { field : $(t).parent().attr('id')  }, function(h){                    
+                if ( h.err == "OK")
+                    {
+                        $(t).parent().remove();
+                    }
+            }, 'json');
+            //POST END 
+        }
+        
+        $('.add_tag').each(function( i, domE){ $(domE).click(function(){ addTag(this) }); });
+        removeTagActive();
+        
+        //END ADD TAG
+        
         {% if paginas > 1 %}
         $('#pager_pages').change(function(){ setPorPagina(this); });
         

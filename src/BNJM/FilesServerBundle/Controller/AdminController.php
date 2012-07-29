@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\HttpFoundation;
 use DoctrineExtensions\Paginate\Paginate;
+use BNJM\FilesServerBundle\Entity;
 
 class AdminController extends Controller
 {
@@ -37,6 +38,92 @@ class AdminController extends Controller
         $_tags = array();
         foreach ( $tags as $t) $_tags[] = $t['tag'];        
         return new HttpFoundation\Response( json_encode( $_tags ) );
+    }
+    
+    /**
+     * @Route("/_settag", name="FileServer_AjaxSetTag") 
+     */
+    public function settagAction() {
+        $return = array();
+        $request = $this->getRequest();
+        
+        if ( $request->isXmlHttpRequest() )
+        {
+            if ( $request->get('fileid') )
+            {
+                $em = $this->getDoctrine()
+                                ->getEntityManager();
+                $file = $em->getRepository('FileServerBundle:FileStore')
+                                ->findOneBy(array('id'=>$request->get('fileid')));
+                if ( $file)
+                    {
+                        if (strlen($request->get('tag'))>2)
+                        {
+                            $tag = $em->getRepository('FileServerBundle:FileTag')
+                                        ->findOneBy(array('tag'=>$request->get('tag')));
+                            
+                            if ( !$tag) {
+                                $tag = new Entity\FileTag();
+                                $tag->setTag($request->get('tag'));
+                                $file->addFileTag($tag);
+                                $em->persist($file);
+                                $em->flush();
+                            } else {
+                                if ( !$file->getTags()->contains($tag))
+                                {
+                                    $file->addFileTag($tag);
+                                    $em->persist($file);
+                                    $em->flush();
+                                }
+                            }
+                            
+                            
+                            
+                            return new HttpFoundation\Response(json_encode(array('err'=>'OK')));
+                            
+                        } else return new HttpFoundation\Response(json_encode(array('err'=>'Etiqueta demasiado corta.')));
+                    }
+                    else return new HttpFoundation\Response('Archivo desconosido.', 404);
+            } else return new HttpFoundation\Response('Archivo desconosido.', 404);
+        } else return new HttpFoundation\Response('Ninguna acción disponibles', 404);
+        
+    }
+    
+    /**
+     * @Route("/_unsettag", name="FileServer_AjaxUnSetTag") 
+     */
+    public function unsettagAction() {
+        $return = array();
+        $request = $this->getRequest();
+        $field = explode("_", $request->get('field'));
+        
+        if ( $request->isXmlHttpRequest() )
+        {
+            if ( $field[2] )
+            {
+                $em = $this->getDoctrine()
+                                ->getEntityManager();
+                $file = $em->getRepository('FileServerBundle:FileStore')
+                                ->findOneBy(array('id'=>$field[2]));
+                if ( $file)
+                    {
+                            $tag = $em->getRepository('FileServerBundle:FileTag')
+                                        ->findOneBy(array('tag'=>$field[1]));
+                            
+                            if ( $tag) {
+                                if ( $file->getTags()->contains($tag) )
+                                {
+                                    $file->getTags()->removeElement($tag);
+                                    $em->persist($file);
+                                    $em->flush();                                            
+                                    return new HttpFoundation\Response(json_encode(array('err'=>'OK')));                                                    
+                                } else return new HttpFoundation\Response(json_encode(array('err'=>'OK')));                                                    
+                            } return new HttpFoundation\Response(json_encode(array('err'=>'Etiqueta no válida.')));                                                    
+                    }
+                    else return new HttpFoundation\Response('Archivo desconosido.', 404);
+            } else return new HttpFoundation\Response('Archivo desconosido.', 404);
+        } else return new HttpFoundation\Response('Ninguna acción disponibles', 404);
+        
     }
     
     /**

@@ -39,7 +39,7 @@ class FileStore {
     private $type;
     
     /**
-     * @ORM\ManyToMany(targetEntity="FileTag", inversedBy="id")
+     * @ORM\ManyToMany(targetEntity="FileTag", inversedBy="id", cascade={"all"})
    * @ORM\JoinTable(name="files_tagged",
    *      joinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="id")},
    *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -142,6 +142,7 @@ class FileStore {
     {
         return $this->store;
     }
+  
 
     /**
      * Add tags
